@@ -113,7 +113,7 @@ namespace BookStoreApp.API.Controllers
 
         // DELETE: api/Books/5
         [HttpDelete("{id}")]
-        [[Authorize(Roles = "Administrator")]]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteBook(int id)
         {
             var book = await _context.Books.FindAsync(id);
