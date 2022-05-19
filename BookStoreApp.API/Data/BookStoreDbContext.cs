@@ -13,8 +13,7 @@ namespace BookStoreApp.API.Data
         {
         }
 
-        public BookStoreDbContext(DbContextOptions<BookStoreDbContext> options)
-            : base(options)
+        public BookStoreDbContext(DbContextOptions<BookStoreDbContext> options) : base(options)
         {
         }
 
