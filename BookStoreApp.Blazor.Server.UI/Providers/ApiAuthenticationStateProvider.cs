@@ -1,6 +1,5 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -20,7 +19,7 @@ namespace BookStoreApp.Blazor.Server.UI.Providers
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity());
-            
+
             var savedToken = await localStorage.GetItemAsync<string>("accessToken");
 
             if (savedToken == null)
@@ -30,7 +29,7 @@ namespace BookStoreApp.Blazor.Server.UI.Providers
 
             var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
 
-            if (tokenContent.ValidTo < DateTime.Now)   
+            if (tokenContent.ValidTo < DateTime.Now)
             {
                 return new AuthenticationState(user);
             }
@@ -59,7 +58,7 @@ namespace BookStoreApp.Blazor.Server.UI.Providers
         }
 
         private async Task<List<Claim>> GetClaims()
-		{
+        {
             var savedToken = await localStorage.GetItemAsync<string>("accessToken");
             var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
             var claims = tokenContent.Claims.ToList();

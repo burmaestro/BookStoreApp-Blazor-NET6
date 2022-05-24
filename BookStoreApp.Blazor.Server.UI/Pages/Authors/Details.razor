@@ -1,0 +1,85 @@
+﻿@page "/authors/details/{id:int}"
+@inject IAuthorService authorService
+@inject NavigationManager navManager
+
+<h3>Author Details</h3>
+
+<EditForm Model="Author">
+	<fieldset disabled>
+		<div class="form-group">
+			<label for="firstname">First Name</label>
+			<InputText @bind-Value="Author.FirstName" class="form-control" id="firstname" />
+		</div>
+		<br />
+		<div class="form-group">
+			<label for="lastname">Last Name</label>
+			<InputText @bind-Value="Author.LastName" class="form-control" id="lastname" />
+		</div>
+		<br />
+		<div class="form-group">
+			<label for="bio">Biography</label>
+			<InputText @bind-Value="Author.Bio" class="form-control" id="bio" />
+		</div>
+		<br />
+	</fieldset>
+
+	@if (Author.Books == null || Author.Books.Any() == false)
+	{
+		<div class="alert alert-dismissible alert-secondary">
+			No Books for this Author
+		</div>
+	}
+	else
+	{
+		foreach(var book in Author.Books)
+		{
+			<div class="card" style="width: 18rem;">
+				<img class="card-img-top" src="@book.Image" alt="@book.Title">
+				<div class="card-body">
+				  <h5 class="card-title">@book.Title - @book.Price.ToString("C")</h5>
+				  <p class="card-text"></p>
+				  <a href="#" class="btn btn-primary">View Book</a>
+				</div>
+			</div>
+		}
+	}
+
+	<AuthorizeView Roles=@Roles.Administrator Context="RolesCtx">
+		<button class="btn btn-primary" @onclick="GoToEdit">
+			<span class="oi oi-pencil"></span>
+			Edit Author
+		</button>
+	</AuthorizeView>
+		
+	<button class="btn btn-secondary" @onclick="BackToList">
+		<span class="oi oi-media-skip-backward"></span>
+		Back To List
+	</button>
+
+</EditForm>
+
+@code {
+	[Parameter]
+	public int id { get; set; }
+
+	private AuthorDetailsDTO Author = new AuthorDetailsDTO();
+
+	protected async override Task OnInitializedAsync()
+	{
+		var response = await authorService.Get(id);
+		if (response.Success)
+		{
+			Author = response.Data;
+		}
+	}
+
+	private void BackToList()
+	{
+		navManager.NavigateTo("/authors/");
+	}
+
+	private void GoToEdit()
+	{
+		navManager.NavigateTo($"/authors/update/{Author.Id}");
+	}
+}

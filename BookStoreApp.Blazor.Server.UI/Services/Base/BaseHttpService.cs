@@ -21,7 +21,8 @@ namespace BookStoreApp.Blazor.Server.UI.Services.Base
                 return new Response<Guid>()
                 {
                     Message = "Validation errors have occured",
-                    ValidationErrors = apiException.Response, Success = false
+                    ValidationErrors = apiException.Response,
+                    Success = false
                 };
             }
             if (apiException.StatusCode == 404)
@@ -29,10 +30,20 @@ namespace BookStoreApp.Blazor.Server.UI.Services.Base
                 return new Response<Guid>()
                 {
                     Message = "The requested item has not been found",
-                    ValidationErrors = apiException.Response,
                     Success = false
                 };
             }
+
+            if (apiException.StatusCode >= 200 && apiException.StatusCode <= 299)
+            {
+                return new Response<Guid>()
+                {
+                    Message = "Operation Reported Success",
+                    Success = true
+                };
+            }
+
+            //
 
             return new Response<Guid>()
             {
@@ -46,7 +57,7 @@ namespace BookStoreApp.Blazor.Server.UI.Services.Base
         {
             var token = await localStorage.GetItemAsync<string>("accessToken");
 
-            if (token == null)
+            if (token != null)
             {
                 client.HttpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
